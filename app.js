@@ -44,18 +44,20 @@ app.use(
 );
 
 app.use(helmet());
-/*const corsOptions = {
-  origin: "127.0.0.1:8081"
-};
-// Then pass them to cors:
-app.use(cors(corsOptions))*/
+/*
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
-/*
+*/
+const corsOptions = {
+  origin: "http://127.0.0.1:8081"
+};
+// Then pass them to cors:
+app.use(cors(corsOptions))
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', corsOptions.origin)
   res.setHeader('Access-Control-Allow-Credentials', true)
@@ -63,18 +65,9 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
   next()
 });
-*/
-/*app.use(
-  cookieSession({
-    name: "session",
-    secret: "s3CuwsxR6T9",
-    cookie: {
-      secure: true,
-      httpOnly: true,
-      domain: "http://localhost:3000/",
-    },
-  })
-);*/
+
+
+
 
 // app.use(nocache());
 //app.disable("x-powered-by"); Inutile avec helmet deja disabled

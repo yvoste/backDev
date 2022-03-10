@@ -9,32 +9,32 @@
  // logique des sauces sur les differentes routes
  
  const createSauce = async (req, res, next) => {  
-   try {
-     if(req.body.error == 1){
-       const error = {
-         "message":"User validation failed: Form Name : Only letter "
-       };
-       res.status(422).json(error);
-   } else {   
-       const sauceObject = JSON.parse(req.body.sauce);
-       const sauce = new Sauce({
-         ...sauceObject,
-         imageUrl: req.file.filename,
-       });
-       await sauce.save();
-       res.status(201).json({ message: "Objet enregistré !" });
-     }
-   }
-   catch{
-     console.log(error);
-     if (error.name == 'ValidationError') {
-       //console.error('Error Validating!', error);
-       res.status(422).json(error);
-     } else {
-         //console.error(error);
-         res.status(500).json(error);
-     }
-   }  
+    try {        
+      const sauceObject = JSON.parse(req.body.sauce);
+      console.log(sauceObject)
+      const sauce = new Sauce({
+        ...sauceObject,
+        imageUrl: req.file.filename,
+      });
+      
+      const ret = await sauce.save();
+      console.log(ret);
+      if(ret) {   
+        res.status(201).json({ message: "Sauce créée !" });
+      } else {
+        const error = {
+          "message": "failed to creating sauce"
+        };
+        res.status(401).json(error);
+      }
+    }
+    catch{
+      console.log(error);    
+      const err = {
+        "message": error.info
+      };
+      res.status(error.statusCode).json(err);  
+    }  
  };
  
  const getAllSauce = async (req, res, next) => {

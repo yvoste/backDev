@@ -10,11 +10,16 @@ var ValidatorError  = mongoose.Error.ValidatorError;
 
 const signup = async (req, res, next) => { 
   try{
-    if(req.body.error == 1){
+    if(req.invalidEmail && req.invalidEmail == 1){
+      const error = {
+        "message": "veuillez rentrer un email valide ! ex : michel@gmail.com"
+      };
+      res.status(401).json(error);
+    } else if(req.badPassword && req.badPassword == 1){
         const error = {
-          "message":"User validation failed: password: Au moins une minuscule et majuscule 6 caracter min et 20 max 2 chiffre min pas d'espace"
+          "message":"the password must contain At least one lower and upper case 6 characters min and 20 max 2 digits min no space"
         };
-        res.status(422).json(error);
+        res.status(401).json(error);
     } else {    
       const user = new User({
         email: req.body.email,
@@ -29,18 +34,18 @@ const signup = async (req, res, next) => {
       if(ret) {   
         res.status(201).json({ message: "Utilisateur créé !" });
       } else {
-        res.status(422).json(error);
+        const error = {
+          "message": "failed to creating user"
+        };
+        res.status(401).json(error);
       }
     }    
   } catch (error){
-    console.log(error);
-    if (error.name == 'ValidationError') {
-      //console.error('Error Validating!', error);
-      res.status(422).json(error);
-    } else {
-        //console.error(error);
-        res.status(500).json(error);
-    }
+    console.log(error);    
+    const err = {
+      "message": error.info.email
+    };
+    res.status(error.statusCode).json(err);    
   }
 };
 
@@ -67,9 +72,9 @@ const login = (req, res, next) => {
             }),
           });
         })
-        .catch((error) => res.status(400).json({ error: error }));
+        .catch((error) => res.status(401).json({ error: error }));
     })
-    .catch((error) => res.status(400).json({ error: error }));
+    .catch((error) => res.status(401).json({ error: error }));
 };
 
 module.exports = {
